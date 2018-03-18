@@ -1,22 +1,13 @@
 var express = require('express');
+var json = require('express-json');
 var app = express();
 var fs = require("fs");
 
-app.use(express.json());
+const serverMethods = require("./server_methods.js")
+
+app.use(json());
 
 story = "";
-
-function needSpace(story, word) {
-  if(story.length === 0) return false;
-  if(['.','!','?',',',':',';',')'].includes(word.charAt(0)))
-    return false;
-  if(story.endsWith('(')) return false;
-  if((story.match('"') || []).length%2 == 1 && word.startsWith('"'))
-    return false;
-  if((story.match('"') || []).length%2 == 1 && story.endsWith('"'))
-    return false;
-  return true;
-}
 
 app.get('/story', function (req, res) {
   res.end(story);
