@@ -26,7 +26,7 @@ function needSpace(story, word) {
 function isBanned(story, bannedStrings, word){
 	for (let i = 0; i < bannedStrings.length; i++) {
 		let string = story + word;
-		if(string.indexOf(bannedStrings[i]) !== -1)
+		if(string.toUpperCase().indexOf(bannedStrings[i].toUpperCase()) !== -1)
 			return true;
 	}
 	return false;
