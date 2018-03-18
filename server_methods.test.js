@@ -34,6 +34,10 @@ describe('isBanned()', () =>{
 	test('detects banned phrase (Phrase given as new word)', () => {
 		expect(serverFunctions.isBanned("Beginning of the storry, and ", ["BANNED WORD"], "BANNED WORD")).toBe(true);
 	})
+
+	test('detects banned single word with random upper or lower case', () => {
+		expect(serverFunctions.isBanned("Beginning of the storry, and ", ["BANNED_WORD"], "BaNnEd_WORD")).toBe(true);
+	})
 })
 
 describe('padWord()', () => {
