@@ -20,6 +20,9 @@ function needSpace(story, word) {
   return true;
 }
 
+/*
+ *Function used to check wether a specific word is banned
+ */ 
 function isBanned(story, bannedStrings, word){
 	for (let i = 0; i < bannedStrings.length; i++) {
 		let string = story + word;
@@ -29,4 +32,10 @@ function isBanned(story, bannedStrings, word){
 	return false;
 }
 
-module.exports = {"needSpace": needSpace, "isBanned": isBanned};
+function padWord(story, word){
+	if(needSpace(story, word))
+		return " " + word
+	return word;
+}
+
+module.exports = {"needSpace": needSpace, "isBanned": isBanned, "padWord": padWord};
