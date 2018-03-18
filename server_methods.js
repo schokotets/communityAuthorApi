@@ -41,11 +41,11 @@
  	return word;
  }
 
- function addWordToVoting(gameStatus, word){
+ function addWordToVoting(gameStatus, uuid, word){
  	let story = gameStatus.story;
  	if(isBanned(gameStatus, word))
  		return
- 	gameStatus.votingQueue.push(word);
+ 	gameStatus.votingQueue[uuid] = word;
  }
 
  module.exports = {

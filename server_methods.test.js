@@ -23,7 +23,7 @@ describe('isBanned()', () =>{
 		let gameStatus = {
 			story: "Beginning of the storry, and ",
 			bannedStrings: ["BANNED_WORD"],
-			votingQueue: []
+			votingQueue: {}
 		}
 		expect(serverFunctions.isBanned(gameStatus, "BANNED_WORD")).toBe(true);
 	})
@@ -32,7 +32,7 @@ describe('isBanned()', () =>{
 		let gameStatus = {
 			story: "Beginning of the storry, and ",
 			bannedStrings: ["BANNED_WORD"],
-			votingQueue: []
+			votingQueue: {}
 		}
 		expect(serverFunctions.isBanned(gameStatus, "ALLOWED_WORD")).toBe(false);
 	})
@@ -41,7 +41,7 @@ describe('isBanned()', () =>{
 		let gameStatus = {
 			story: "Beginning of the storry, and BANNED ",
 			bannedStrings: ["BANNED WORD"],
-			votingQueue: []
+			votingQueue: {}
 		}
 		expect(serverFunctions.isBanned(gameStatus, "WORD")).toBe(true);
 	})
@@ -50,7 +50,7 @@ describe('isBanned()', () =>{
 		let gameStatus = {
 			story: "Beginning of the storry, and ",
 			bannedStrings: ["BANNED WORD"],
-			votingQueue: []
+			votingQueue: {}
 		}
 		expect(serverFunctions.isBanned(gameStatus, "BANNED WORD")).toBe(true);
 	})
@@ -59,7 +59,7 @@ describe('isBanned()', () =>{
 		let gameStatus = {
 			story: "Beginning of the storry, and ",
 			bannedStrings: ["BANNED_WORD"],
-			votingQueue: []
+			votingQueue: {}
 		}
 		expect(serverFunctions.isBanned(gameStatus, "BaNnEd_WORD")).toBe(true);
 	})
@@ -70,7 +70,7 @@ describe('padWord()', () => {
 		let gameStatus = {
 			story: "Die Geschichte",
 			bannedStrings: ["BANNED_WORD"],
-			votingQueue: []
+			votingQueue: {}
 		}
 		expect(serverFunctions.padWord(gameStatus, "beginnt")).toBe(" beginnt");
 	})
@@ -78,7 +78,7 @@ describe('padWord()', () => {
 		let gameStatus = {
 			story: "Die Geschichte",
 			bannedStrings: ["BANNED_WORD"],
-			votingQueue: []
+			votingQueue: {}
 		}
 		expect(serverFunctions.padWord(gameStatus, ".")).toBe(".");
 	})
@@ -89,19 +89,19 @@ describe('addWordToVoting()', () => {
 		let gameStatus = {
 			story: "Die Geschichte beginnt mit",
 			bannedStrings: ["BAnNeD"],
-			votingQueue: []
+			votingQueue: {}
 		}
-		serverFunctions.addWordToVoting(gameStatus, "einem");
-		expect(gameStatus.votingQueue).toEqual(["einem"]);
+		serverFunctions.addWordToVoting(gameStatus, "uuidTest", "einem");
+		expect(gameStatus.votingQueue).toEqual({"uuidTest": "einem"});
 	})
 
 	test('prevents disallowed word', () => {
 		let gameStatus = {
 			story: "Die Geschichte beginnt mit",
 			bannedStrings: ["BAnNeD"],
-			votingQueue: []
+			votingQueue: {}
 		}
-		serverFunctions.addWordToVoting(gameStatus, "banned");
-		expect(gameStatus.votingQueue).toEqual([]);
+		serverFunctions.addWordToVoting(gameStatus, "uuidTest", "banned");
+		expect(gameStatus.votingQueue).toEqual({});
 	})
 })
