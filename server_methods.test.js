@@ -20,31 +20,88 @@ describe('needSpace()', () =>{
 
 describe('isBanned()', () =>{
 	test('detects banned single word', () => {
-		expect(serverFunctions.isBanned("Beginning of the storry, and ", ["BANNED_WORD"], "BANNED_WORD")).toBe(true);
+		let gameStatus = {
+			story: "Beginning of the storry, and ",
+			bannedStrings: ["BANNED_WORD"],
+			votingQueue: []
+		}
+		expect(serverFunctions.isBanned(gameStatus, "BANNED_WORD")).toBe(true);
 	})
 
 	test('does not prevent allowed single word', () => {
-		expect(serverFunctions.isBanned("Beginning of the storry, and ", ["BANNED_WORD"], "ALLOWED_WORD")).toBe(false);
+		let gameStatus = {
+			story: "Beginning of the storry, and ",
+			bannedStrings: ["BANNED_WORD"],
+			votingQueue: []
+		}
+		expect(serverFunctions.isBanned(gameStatus, "ALLOWED_WORD")).toBe(false);
 	})
 
 	test('detects banned phrase (Phrase given as new word)', () => {
-		expect(serverFunctions.isBanned("Beginning of the storry, and BANNED ", ["BANNED WORD"], "WORD")).toBe(true);
+		let gameStatus = {
+			story: "Beginning of the storry, and BANNED ",
+			bannedStrings: ["BANNED WORD"],
+			votingQueue: []
+		}
+		expect(serverFunctions.isBanned(gameStatus, "WORD")).toBe(true);
 	})
 
 	test('detects banned phrase (Phrase given as new word)', () => {
-		expect(serverFunctions.isBanned("Beginning of the storry, and ", ["BANNED WORD"], "BANNED WORD")).toBe(true);
+		let gameStatus = {
+			story: "Beginning of the storry, and ",
+			bannedStrings: ["BANNED WORD"],
+			votingQueue: []
+		}
+		expect(serverFunctions.isBanned(gameStatus, "BANNED WORD")).toBe(true);
 	})
 
 	test('detects banned single word with random upper or lower case', () => {
-		expect(serverFunctions.isBanned("Beginning of the storry, and ", ["BANNED_WORD"], "BaNnEd_WORD")).toBe(true);
+		let gameStatus = {
+			story: "Beginning of the storry, and ",
+			bannedStrings: ["BANNED_WORD"],
+			votingQueue: []
+		}
+		expect(serverFunctions.isBanned(gameStatus, "BaNnEd_WORD")).toBe(true);
 	})
 })
 
 describe('padWord()', () => {
 	test('pads word with space', () => {
-		expect(serverFunctions.padWord("Die Geschichte", "beginnt")).toBe(" beginnt");
+		let gameStatus = {
+			story: "Die Geschichte",
+			bannedStrings: ["BANNED_WORD"],
+			votingQueue: []
+		}
+		expect(serverFunctions.padWord(gameStatus, "beginnt")).toBe(" beginnt");
 	})
 	test('doesn\'t pad "." with space', () => {
-		expect(serverFunctions.padWord("Die Geschichte", ".")).toBe(".");
+		let gameStatus = {
+			story: "Die Geschichte",
+			bannedStrings: ["BANNED_WORD"],
+			votingQueue: []
+		}
+		expect(serverFunctions.padWord(gameStatus, ".")).toBe(".");
+	})
+})
+
+describe('addWordToVoting()', () => {
+	test('adds allowed word', () => {
+		let gameStatus = {
+			story: "Die Geschichte beginnt mit",
+			bannedStrings: ["BAnNeD"],
+			votingQueue: []
+		}
+		serverFunctions.addWordToVoting(gameStatus, "einem");
+		expect(gameStatus.votingQueue).toEqual(["einem"]);
+	})
+
+	test('prevents disallowed word', () => {
+		let gameStatus = {
+			story: "Die Geschichte beginnt mit",
+			bannedStrings: ["BAnNeD"],
+			votingQueue: []
+		}
+		serverFunctions.addWordToVoting(gameStatus, "banned");
+		expect(gameStatus.votingQueue).toEqual([]);
 	})
 })

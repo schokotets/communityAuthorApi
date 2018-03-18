@@ -7,7 +7,11 @@ const serverMethods = require("./server_methods.js")
 
 app.use(json());
 
-story = "";
+let gameStatus = {
+  story: "",
+  bannedStrings: [],
+  votingQueue: []
+}
 
 app.get('/story', function (req, res) {
   res.end(story);
