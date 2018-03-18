@@ -10,7 +10,7 @@ app.use(express.json())
 let gameStatus = {
   story: "",
   bannedStrings: [],
-  votingQueue: []
+  votingQueue: {}
 }
 
 app.get('/story', function (req, res) {
@@ -23,7 +23,7 @@ app.post('/submit', function (req, res) {
   if(word.match(/([\s]+)/g) != null) {
     res.status(403).end();
   } else {
-    gameStatus.story += (serverMethods.needSpace(gameStatus.story, word)?" ":"") + word;
+    gameStatus.votingQueue[uuid] = addWordToVoting(gameStatus, uuid, word);
     res.status(200).send(word);
   }
 });
