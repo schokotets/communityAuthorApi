@@ -4,8 +4,16 @@ test('needs Space before "a"', () => {
 	expect(serverFunctions.needSpace("He likes", "a")).toBe(true);
 })
 
-test('needs Space before ","', () =>{
+test('no Space before ","', () =>{
 	expect(serverFunctions.needSpace("He likes", ",")).toBe(false);
+})
+
+test('needs Space before first \'"\'', () =>{
+	expect(serverFunctions.needSpace("He says:", "\"")).toBe(true);
+})
+
+test('no Space before second \'"\'', () =>{
+	expect(serverFunctions.needSpace("He explained: \"This is how.", "\"")).toBe(false);
 })
 
 test('detects banned single word', () => {
