@@ -1,6 +1,6 @@
-var express = require('express');
-var json = require('express-json');
-var app = express();
+const express = require('express');
+const json = require('express-json');
+const app = express();
 
 const serverMethods = require("./server_methods.js")
 
