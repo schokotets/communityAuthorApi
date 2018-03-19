@@ -1,8 +1,9 @@
 const express = require('express');
-const json = require('express-json');
+const json = require('body-parser').json;
 const app = express();
 
-const serverMethods = require("./server_methods.js")
+const serverMethods = require("./server_methods.js");
+addWordToVoting = serverMethods.addWordToVoting;
 
 app.use(json());
 
@@ -11,6 +12,13 @@ let gameStatus = {
   bannedStrings: [],
   votingQueue: {}
 }
+
+var server = app.listen(8081, function () {
+  var host = server.address().address;
+  var port = server.address().port;
+
+  console.log("Server listening at http://%s:%s", host, port);
+});
 
 app.get('/story', function (req, res) {
   res.end(gameStatus.story);
@@ -26,15 +34,10 @@ app.post('/submit', function (req, res) {
   if(word.match(/([\s]+)/g) != null) {
     res.status(403).end();
   } else {
-    gameStatus.votingQueue[uuid] = addWordToVoting(gameStatus, uuid, word);
+    addWordToVoting(gameStatus, uuid, word);
     res.status(200).send(word);
   }
 });
 
 
-var server = app.listen(8081, function () {
-  var host = server.address().address;
-  var port = server.address().port;
 
-  console.log("Server listening at http://%s:%s", host, port);
-});
