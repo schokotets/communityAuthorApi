@@ -17,6 +17,10 @@ app.get('/story', function (req, res) {
   res.end(gameStatus.story);
 });
 
+app.get('/queue', function (req, res) {
+  res.end(gameStatus.votingQueue);
+});
+
 app.post('/submit', function (req, res) {
   let word = req.body.word.trim();
   let uuid = req.body.uuid;
