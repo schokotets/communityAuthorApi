@@ -5,7 +5,6 @@ const app = express();
 const serverMethods = require("./server_methods.js")
 
 app.use(json());
-app.use(express.json())
 
 let gameStatus = {
   story: "",
