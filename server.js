@@ -18,7 +18,7 @@ app.get('/story', function (req, res) {
 });
 
 app.get('/queue', function (req, res) {
-  res.end(gameStatus.votingQueue);
+  res.end(JSON.stringify(gameStatus.votingQueue));
 });
 
 app.post('/submit', function (req, res) {
