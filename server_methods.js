@@ -5,10 +5,12 @@
  	if(story.length === 0)
  		return false;
 
+  word.replace(new RegExp('\"', 'g'), '"');
+
  	if(['.','!','?',',',':',';',')'].includes(word.charAt(0)))
  	return false;
 
- 	if(story.endsWith('(')) 
+ 	if(story.endsWith('('))
  		return false;
 
  	if((story.match('"') || []).length%2 == 1 && word.startsWith('"'))
@@ -22,7 +24,7 @@
 
 /*
  *Function used to check wether a specific word is banned
- */ 
+ */
  function isBanned(gameStatus, word){
  	let story = gameStatus.story;
  	let bannedStrings = gameStatus.bannedStrings;
