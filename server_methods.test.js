@@ -78,7 +78,8 @@ describe('padWord()', () => {
 		let gameStatus = {
 			story: "Die Geschichte",
 			bannedStrings: ["BANNED_WORD"],
-			votingQueue: {}
+			votingQueue: {},
+			votingResult: {}
 		}
 		expect(serverFunctions.padWord(gameStatus, ".")).toBe(".");
 	})
@@ -89,7 +90,8 @@ describe('addWordToVoting()', () => {
 		let gameStatus = {
 			story: "Die Geschichte beginnt mit",
 			bannedStrings: ["BAnNeD"],
-			votingQueue: {}
+			votingQueue: {},
+			votingResult: {}
 		}
 		serverFunctions.addWordToVoting(gameStatus, "uuidTest", "einem");
 		expect(gameStatus.votingQueue).toEqual({"uuidTest": "einem"});
@@ -99,7 +101,8 @@ describe('addWordToVoting()', () => {
 		let gameStatus = {
 			story: "Die Geschichte beginnt mit",
 			bannedStrings: ["BAnNeD"],
-			votingQueue: {}
+			votingQueue: {},
+			votingResult: {}
 		}
 		serverFunctions.addWordToVoting(gameStatus, "uuidTest", "banned");
 		expect(gameStatus.votingQueue).toEqual({});
