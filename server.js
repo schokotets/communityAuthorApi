@@ -49,11 +49,17 @@ app.post('/submit', function (req, res) {
   if(word.match(/([\s]+)/g) != null) {
     res.status(403).end();
   } else {
-    addWordToVoting(gameStatus, uuid, word);
+    //addWordToVoting(gameStatus, uuid, word);
     // For testing purposes:
-    let spaced = (needSpace(gameStatus.story, word)?" ":"") + word;
-    gameStatus.story += spaced;
-    console.log("Word submitted: \"" + spaced + "\"")
-    res.status(200).send(spaced);
+    if(word == "clear") {
+      gameStatus.story = "";
+      console.log("Cleared the story");
+      res.status(200).end();
+    } else {
+      let spaced = (needSpace(gameStatus.story, word)?" ":"") + word;
+      gameStatus.story += spaced;
+      console.log("Word submitted: \"" + spaced + "\"")
+      res.status(200).send(spaced);
+    }
   }
 });
