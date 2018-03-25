@@ -3,8 +3,11 @@ const json = require('body-parser').json;
 const app = express();
 
 const serverMethods = require("./server_methods.js");
-addWordToVoting = serverMethods.addWordToVoting;
 needSpace = serverMethods.needSpace;
+continueStory = serverMethods.continueStory;
+addWordToVoting = serverMethods.addWordToVoting;
+voteFor = serverMethods.voteFor;
+reset = serverMethods.reset;
 
 app.use(json());
 // Add headers
@@ -22,9 +25,11 @@ app.use(function (req, res, next) {
 
 
 let gameStatus = {
+  voting: false,
   story: "",
   bannedStrings: [],
-  votingQueue: {}
+  votingQueue: {}, //uuid -> word
+  votingResult: {} //id -> n
 }
 
 var server = app.listen(8081, function () {
@@ -34,32 +39,51 @@ var server = app.listen(8081, function () {
   console.log("Server listening at http://%s:%s", host, port);
 });
 
-app.get('/story', function (req, res) {
-  res.end(gameStatus.story);
+// for testing purposes
+app.put('/reset', function (req, res) {
+  reset(gameStatus, true);
+  res.status(200).end();
+});
+
+// for testing purposes
+app.put('/toggle', function (req, res) {
+  gameStatus.voting ^= true;
+  if(!gameStatus.voting) { //voting is over
+    continueStory(gameStatus);
+    reset(gameStatus, false);
+  }
+  res.status(200).send("voting: " + gameStatus.voting);
 });
 
 app.get('/queue', function (req, res) {
-  res.end(JSON.stringify(gameStatus.votingQueue));
+  if(gameStatus.voting)
+    res.json(gameStatus.votingResult).end();
+  else res.status(403).end();
+});
+
+app.post('/vote', function (req, res) {
+  if(gameStatus.voting) {
+    let uuid = req.body.uuid;
+    let id = req.body.id;
+    voteFor(gameStatus, uuid, id);
+    res.status(200).end();
+  } else {
+    res.status(403).end();
+  }
+});
+
+app.get('/story', function (req, res) {
+  res.send(gameStatus.story);
 });
 
 app.post('/submit', function (req, res) {
-  console.log("Request made.");
   let word = req.body.word.trim();
   let uuid = req.body.uuid;
   if(word.match(/([\s]+)/g) != null) {
     res.status(403).end();
   } else {
-    //addWordToVoting(gameStatus, uuid, word);
-    // For testing purposes:
-    if(word == "clear") {
-      gameStatus.story = "";
-      console.log("Cleared the story");
-      res.status(200).end();
-    } else {
-      let spaced = (needSpace(gameStatus.story, word)?" ":"") + word;
-      gameStatus.story += spaced;
-      console.log("Word submitted: \"" + spaced + "\"")
-      res.status(200).send(spaced);
-    }
+    addWordToVoting(gameStatus, uuid, word);
+    console.log('Word submitted: "' + word + '"')
+    res.status(200).send(word);
   }
 });
