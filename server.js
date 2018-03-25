@@ -4,8 +4,22 @@ const app = express();
 
 const serverMethods = require("./server_methods.js");
 addWordToVoting = serverMethods.addWordToVoting;
+needSpace = serverMethods.needSpace;
 
 app.use(json());
+// Add headers
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', false);
+    // Pass to next layer of middleware
+    next();
+});
+
 
 let gameStatus = {
   story: "",
@@ -29,15 +43,17 @@ app.get('/queue', function (req, res) {
 });
 
 app.post('/submit', function (req, res) {
+  console.log("Request made.");
   let word = req.body.word.trim();
   let uuid = req.body.uuid;
   if(word.match(/([\s]+)/g) != null) {
     res.status(403).end();
   } else {
     addWordToVoting(gameStatus, uuid, word);
-    res.status(200).send(word);
+    // For testing purposes:
+    let spaced = (needSpace(gameStatus.story, word)?" ":"") + word;
+    gameStatus.story += spaced;
+    console.log("Word submitted: \"" + spaced + "\"")
+    res.status(200).send(spaced);
   }
 });
-
-
-
