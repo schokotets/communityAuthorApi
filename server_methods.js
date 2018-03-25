@@ -1,7 +1,7 @@
 /*
  *Function used to check wether a specific word needs a space in front of given word
  */
- function needSpace(story, word) {
+function needSpace(story, word) {
  	if(story.length === 0)
  		return false;
 
@@ -20,12 +20,16 @@
  		return false;
 
  	return true;
- }
+}
 
-/*
- *Function used to check wether a specific word is banned
- */
- function isBanned(gameStatus, word){
+function padWord(gameStatus, word){
+ 	let story = gameStatus.story;
+ 	if(needSpace(story, word))
+ 		return " " + word
+ 	return word;
+}
+
+function isBanned(gameStatus, word){
  	let story = gameStatus.story;
  	let bannedStrings = gameStatus.bannedStrings;
  	for (let i = 0; i < bannedStrings.length; i++) {
@@ -34,25 +38,41 @@
  			return true;
  	}
  	return false;
- }
+}
 
- function padWord(gameStatus, word){
- 	let story = gameStatus.story;
- 	if(needSpace(story, word))
- 		return " " + word
- 	return word;
- }
+function continueStory(gameStatus) {
+  let list = gameStatus.votingResult;
+  let word = Object.keys(list).reduce((a, b) => list[a] > list[b] ? a : b);
+  gameStatus.story += padWord(gameStatus, word);
+}
 
- function addWordToVoting(gameStatus, uuid, word){
+function addWordToVoting(gameStatus, uuid, word){
  	let story = gameStatus.story;
  	if(isBanned(gameStatus, word))
- 		return
+ 		return;
  	gameStatus.votingQueue[uuid] = word;
- }
+  //TODO change later
+  if(!(word in gameStatus.votingResult))
+    gameStatus.votingResult[word] = 0;
+}
 
- module.exports = {
+function voteFor(gameStatus, uuid, id){
+  //TODO no voting twice per uuid (via votingQueue)
+  gameStatus.votingResult[Object.keys(gameStatus.votingResult)[id]]++;
+}
+
+function reset(gameStatus, hard) {
+  if(hard) gameStatus.story = "";
+  gameStatus.votingQueue = {};
+  gameStatus.votingResult = {};
+}
+
+module.exports = {
  	"needSpace": needSpace,
- 	"isBanned": isBanned,
  	"padWord": padWord,
- 	"addWordToVoting": addWordToVoting
- };
+ 	"isBanned": isBanned,
+  "continueStory": continueStory,
+ 	"addWordToVoting": addWordToVoting,
+  "voteFor": voteFor,
+  "reset": reset
+};
