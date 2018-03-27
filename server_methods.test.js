@@ -130,7 +130,6 @@ describe('addWordToVoting()', () => {
 	})
 })
 
-
 describe('voteFor()', () => {
 	test('votes for existing word', () => {
 			let gameStatus = {
