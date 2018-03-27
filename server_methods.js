@@ -41,9 +41,12 @@ function isBanned(gameStatus, word){
 }
 
 function continueStory(gameStatus) {
-  let list = gameStatus.votingResult;
-  let word = Object.keys(list).reduce((a, b) => list[a] > list[b] ? a : b);
-  gameStatus.story += padWord(gameStatus, word);
+  gameStatus.story += padWord(gameStatus, mostPopular(gameStatus.votingResult));
+}
+
+function mostPopular(map) {
+  if(!map || !Object.keys(map).length) return "";
+  return Object.keys(map).reduce((a, b) => map[a] > map[b] ? a : b);
 }
 
 function addWordToVoting(gameStatus, uuid, word){
@@ -51,20 +54,26 @@ function addWordToVoting(gameStatus, uuid, word){
  	if(isBanned(gameStatus, word))
  		return;
  	gameStatus.votingQueue[uuid] = word;
-  //TODO change later
+  //TODO change later - it won't be tested
   if(!(word in gameStatus.votingResult))
     gameStatus.votingResult[word] = 0;
 }
 
 function voteFor(gameStatus, uuid, id){
   //TODO no voting twice per uuid (via votingQueue)
-  gameStatus.votingResult[Object.keys(gameStatus.votingResult)[id]]++;
+  let options = Object.keys(gameStatus.votingResult);
+  if(!options || !options.length) return;
+  gameStatus.votingResult[options[id]]++;
 }
 
 function reset(gameStatus, hard) {
-  if(hard) gameStatus.story = "";
+  if(hard){
+    gameStatus.story = "";
+    gameStatus.bannedStrings = {};
+  }
   gameStatus.votingQueue = {};
   gameStatus.votingResult = {};
+  gameStatus.voting = false;
 }
 
 module.exports = {
@@ -72,6 +81,7 @@ module.exports = {
  	"padWord": padWord,
  	"isBanned": isBanned,
   "continueStory": continueStory,
+  "mostPopular": mostPopular,
  	"addWordToVoting": addWordToVoting,
   "voteFor": voteFor,
   "reset": reset
