@@ -121,5 +121,34 @@ describe('voteFor()', () => {
 })
 
 describe('reset()', () => {
-
+	test('resets soft', () => {
+		let gameStatus = {
+			voting: true,
+			story: "A story",
+			bannedStrings: ["BAnNeD"],
+			votingQueue: {"uuid": "word"},
+			votingResult: {"word": 4}
+		}
+		serverFunctions.reset(gameStatus, false);
+		expect(gameStatus.story).toEqual("A story");
+		expect(gameStatus.voting).toBeFalsy();
+		expect(gameStatus.votingQueue).toEqual({});
+		expect(gameStatus.votingResult).toEqual({});
+		expect(gameStatus.bannedStrings).toEqual(["BAnNeD"]);
+	})
+	test('resets hard', () => {
+		let gameStatus = {
+			voting: true,
+			story: "A story",
+			bannedStrings: ["BAnNeD"],
+			votingQueue: {"uuid": "word"},
+			votingResult: {"word": 4}
+		}
+		serverFunctions.reset(gameStatus, true);
+		expect(gameStatus.story).toEqual("");
+		expect(gameStatus.voting).toBeFalsy();
+		expect(gameStatus.votingQueue).toEqual({});
+		expect(gameStatus.votingResult).toEqual({});
+		expect(gameStatus.bannedStrings).toEqual({});
+	})
 })

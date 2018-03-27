@@ -64,9 +64,13 @@ function voteFor(gameStatus, uuid, id){
 }
 
 function reset(gameStatus, hard) {
-  if(hard) gameStatus.story = "";
+  if(hard){
+    gameStatus.story = "";
+    gameStatus.bannedStrings = {};
+  }
   gameStatus.votingQueue = {};
   gameStatus.votingResult = {};
+  gameStatus.voting = false;
 }
 
 module.exports = {
