@@ -61,7 +61,9 @@ function addWordToVoting(gameStatus, uuid, word){
 
 function voteFor(gameStatus, uuid, id){
   //TODO no voting twice per uuid (via votingQueue)
-  gameStatus.votingResult[Object.keys(gameStatus.votingResult)[id]]++;
+  let options = Object.keys(gameStatus.votingResult);
+  if(!options || !options.length) return;
+  gameStatus.votingResult[options[id]]++;
 }
 
 function reset(gameStatus, hard) {

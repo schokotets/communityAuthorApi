@@ -132,7 +132,23 @@ describe('addWordToVoting()', () => {
 
 
 describe('voteFor()', () => {
-
+	test('votes for existing word', () => {
+			let gameStatus = {
+				votingResult: {
+					"word1": 3,
+					"word2": 1
+				}
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", 1);
+			expect(gameStatus.votingResult).toEqual({"word1": 3, "word2": 2})
+	})
+	test('can\'t vote for empty result list', () => {
+			let gameStatus = {
+				votingResult: {}
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", 1);
+			expect(gameStatus.votingResult).toEqual({})
+	})
 })
 
 describe('reset()', () => {
