@@ -91,6 +91,21 @@ describe('isBanned()', () => {
 	})
 })
 
+describe('mostPopular()', () => {
+	test('finds first word', () => {
+		let map = {"word1": 4, "word2": 0, "word3": 2};
+		expect(serverFunctions.mostPopular(map)).toEqual("word1");
+	})
+	test('finds second word', () => {
+		let map = {"word1": 3, "word2": 7, "word3": 1};
+		expect(serverFunctions.mostPopular(map)).toEqual("word2");
+	})
+	test('deals with empty map', () => {
+		let map = {};
+		expect(serverFunctions.mostPopular(map)).toEqual("");
+	})
+})
+
 describe('addWordToVoting()', () => {
 	test('adds allowed word', () => {
 		let gameStatus = {

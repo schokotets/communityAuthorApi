@@ -45,6 +45,7 @@ function continueStory(gameStatus) {
 }
 
 function mostPopular(map) {
+  if(!map || !Object.keys(map).length) return "";
   return Object.keys(map).reduce((a, b) => map[a] > map[b] ? a : b);
 }
 
