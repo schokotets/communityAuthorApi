@@ -91,42 +91,6 @@ describe('isBanned()', () => {
 	})
 })
 
-describe('continueStory()', () => {
-	const serverFunctions_mock = require('./server_methods');
-	beforeEach(() => {
-		serverFunctions_mock.mostPopular = jest.fn(map => "test");
-		serverFunctions_mock.padWord = jest.fn((gameStatus, word) =>
-			(gameStatus.story === "" ? "" : " ") + word
-		);
-	})
-
-	test('testing test', () => {
-		expect(serverFunctions_mock.mostPopular(null)).toBe("test");
-	})
-
-	test('adds word to empty story', () => {
-		let gameStatus = {
-			story: "",
-			bannedStrings: {},
-			votingQueue: {},
-			votingResult: {}
-		}
-		serverFunctions_mock.continueStory(gameStatus);
-		expect(gameStatus.story).toEqual("test");
-	})
-
-	test('adds word to non-empty story', () => {
-		let gameStatus = {
-			story: "The story",
-			bannedStrings: {},
-			votingQueue: {},
-			votingResult: {}
-		}
-		serverFunctions_mock.continueStory(gameStatus);
-		expect(gameStatus.story).toEqual("The story test");
-	})
-})
-
 describe('addWordToVoting()', () => {
 	test('adds allowed word', () => {
 		let gameStatus = {
