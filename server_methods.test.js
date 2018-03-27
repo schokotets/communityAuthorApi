@@ -91,6 +91,19 @@ describe('isBanned()', () => {
 	})
 })
 
+describe('continueStory()', () => {
+	test('continues Story', () => {
+			let gameStatus = {
+				story: "The story",
+				bannedStrings: ["BAnNeD"],
+				votingQueue: {},
+				votingResult: {"word1": 5, "word2": 7}
+			}
+			serverFunctions.continueStory(gameStatus);
+			expect(gameStatus.story).toEqual("The story word2");
+	})
+})
+
 describe('mostPopular()', () => {
 	test('finds first word', () => {
 		let map = {"word1": 4, "word2": 0, "word3": 2};
