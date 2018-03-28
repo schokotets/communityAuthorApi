@@ -57,10 +57,12 @@ function addWordToVoting(gameStatus, uuid, word){
 }
 
 function voteFor(gameStatus, uuid, id){
-  if(uuid in gameStatus.votingQueue && gameStatus.votingQueue[uuid] === id) return;
-  else {
-    let options = Object.keys(gameStatus.votingResult);
-    if(!options || !options.length) return;
+  let options = Object.keys(gameStatus.votingResult);
+  if(uuid in gameStatus.votingQueue && gameStatus.votingQueue[uuid] === id) {
+    return; //already voted for the same number
+  } else if (options.length >= id) {
+    return; //id too big
+  } else {
     gameStatus.votingResult[options[id]]++;
     if(uuid in gameStatus.votingQueue)
       gameStatus.votingResult[options[gameStatus.votingQueue[uuid]]]--;
