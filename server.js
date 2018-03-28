@@ -29,7 +29,7 @@ let gameStatus = {
   story: "",
   bannedStrings: [],
   votingQueue: {}, //uuid -> word
-  votingResult: {} //id -> n
+  votingResult: {} //word -> n
 }
 
 var server = app.listen(8081, function () {
@@ -48,7 +48,10 @@ app.put('/reset', function (req, res) {
 // for testing purposes
 app.put('/toggle', function (req, res) {
   gameStatus.voting ^= true;
-  if(!gameStatus.voting) { //voting is over
+  if(gameStatus.voting) { //submitting is over
+    // TODO generate votingResult
+    gameStatus.votingQueue = {};
+  } else { //voting is over
     continueStory(gameStatus);
     reset(gameStatus, false);
   }
