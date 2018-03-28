@@ -7,6 +7,7 @@ needSpace = serverMethods.needSpace;
 continueStory = serverMethods.continueStory;
 addWordToVoting = serverMethods.addWordToVoting;
 voteFor = serverMethods.voteFor;
+toggle = serverMethods.toggle;
 reset = serverMethods.reset;
 
 app.use(json());
@@ -47,14 +48,7 @@ app.put('/reset', function (req, res) {
 
 // for testing purposes
 app.put('/toggle', function (req, res) {
-  gameStatus.voting ^= true;
-  if(gameStatus.voting) { //submitting is over
-    // TODO generate votingResult
-    gameStatus.votingQueue = {};
-  } else { //voting is over
-    continueStory(gameStatus);
-    reset(gameStatus, false);
-  }
+  toggle(gameStatus);
   res.status(200).send("voting: " + gameStatus.voting);
 });
 

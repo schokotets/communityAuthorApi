@@ -66,6 +66,17 @@ function voteFor(gameStatus, uuid, id){
   gameStatus.votingResult[options[id]]++;
 }
 
+function toggle(gameStatus) {
+  gameStatus.voting ^= true;
+  if(gameStatus.voting) { //submitting is over
+    // TODO generate votingResult
+    gameStatus.votingQueue = {};
+  } else { //voting is over
+    continueStory(gameStatus);
+    reset(gameStatus, false);
+  }
+}
+
 function reset(gameStatus, hard) {
   if(hard){
     gameStatus.story = "";
@@ -84,5 +95,6 @@ module.exports = {
   "mostPopular": mostPopular,
  	"addWordToVoting": addWordToVoting,
   "voteFor": voteFor,
+  "toggle": toggle,
   "reset": reset
 };
