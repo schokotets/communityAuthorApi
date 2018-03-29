@@ -144,22 +144,60 @@ describe('addWordToVoting()', () => {
 })
 
 describe('voteFor()', () => {
-	test('votes for existing word', () => {
+	test('votes for the first time', () => {
 			let gameStatus = {
-				votingResult: {
-					"word1": 3,
-					"word2": 1
-				}
+				votingQueue: { "uuid1": 0, "uuid2": 0, "uuid3": 1, "uuid4": 0 },
+				votingResult: { "word1": 3, "word2": 1 }
 			}
 			serverFunctions.voteFor(gameStatus, "uuid", 1);
 			expect(gameStatus.votingResult).toEqual({"word1": 3, "word2": 2})
+			expect(gameStatus.votingQueue).toEqual(
+				{ "uuid1": 0, "uuid2": 0, "uuid3": 1, "uuid4": 0, "uuid": 1 }
+			)
 	})
-	test('can\'t vote for empty result list', () => {
+	test('change vote', () => {
 			let gameStatus = {
+				votingQueue: { "uuid1": 0, "uuid2": 1, "uuid": 0 },
+				votingResult: { "word1": 2, "word2": 1 }
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", 1);
+			expect(gameStatus.votingQueue).toEqual({"uuid1": 0, "uuid2": 1, "uuid": 1})
+			expect(gameStatus.votingResult).toEqual({"word1": 1, "word2": 2})
+	})
+	test('same vote', () => {
+			let gameStatus = {
+				votingQueue: { "uuid1": 0, "uuid2": 1, "uuid": 0 },
+				votingResult: { "word1": 2, "word2": 1}
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", 0);
+			expect(gameStatus.votingQueue).toEqual({"uuid1": 0, "uuid2": 1, "uuid": 0})
+			expect(gameStatus.votingResult).toEqual({"word1": 2, "word2": 1})
+	})
+	test('empty list', () => {
+			let gameStatus = {
+				votingQueue: {},
 				votingResult: {}
 			}
 			serverFunctions.voteFor(gameStatus, "uuid", 1);
 			expect(gameStatus.votingResult).toEqual({})
+	})
+	test('too big id', () => {
+			let gameStatus = {
+				votingQueue: { "uuid1": 0, "uuid2": 1, "uuid3": 1 },
+				votingResult: { "word1": 1, "word2": 2 }
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", 2);
+			expect(gameStatus.votingQueue).toEqual({"uuid1": 0, "uuid2": 1, "uuid3": 1})
+			expect(gameStatus.votingResult).toEqual({"word1": 1, "word2": 2})
+	})
+	test('too small id', () => {
+			let gameStatus = {
+				votingQueue: { "uuid1": 0, "uuid2": 1, "uuid3": 1 },
+				votingResult: { "word1": 1, "word2": 2 }
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", -2);
+			expect(gameStatus.votingQueue).toEqual({"uuid1": 0, "uuid2": 1, "uuid3": 1})
+			expect(gameStatus.votingResult).toEqual({"word1": 1, "word2": 2})
 	})
 })
 
