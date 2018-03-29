@@ -29,7 +29,7 @@ let gameStatus = {
   voting: false,
   story: "",
   bannedStrings: [],
-  votingQueue: {}, //uuid -> word
+  votingQueue: {}, //uuid -> word / uuid -> id
   votingResult: {} //word -> n
 }
 

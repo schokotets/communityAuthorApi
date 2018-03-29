@@ -22,7 +22,7 @@ describe('padWord()', () => {
 	test('pads word with space', () => {
 		let gameStatus = {
 			story: "Die Geschichte",
-			bannedStrings: ["BANNED_WORD"],
+			bannedStrings: [],
 			votingQueue: {},
 			votingResult: {}
 		}
@@ -31,7 +31,7 @@ describe('padWord()', () => {
 	test('doesn\'t pad "." with space', () => {
 		let gameStatus = {
 			story: "Die Geschichte",
-			bannedStrings: ["BANNED_WORD"],
+			bannedStrings: [],
 			votingQueue: {},
 			votingResult: {}
 		}
@@ -95,7 +95,7 @@ describe('continueStory()', () => {
 	test('continues Story', () => {
 			let gameStatus = {
 				story: "The story",
-				bannedStrings: ["BAnNeD"],
+				bannedStrings: [],
 				votingQueue: {},
 				votingResult: {"word1": 5, "word2": 7}
 			}
@@ -160,6 +160,24 @@ describe('voteFor()', () => {
 			}
 			serverFunctions.voteFor(gameStatus, "uuid", 1);
 			expect(gameStatus.votingResult).toEqual({})
+	})
+})
+
+describe('toggle()', () => {
+	test('voting is over', () => {
+		let gameStatus = {
+			voting: true,
+			story: "A story",
+			bannedStrings: ["BANNED_WORD"],
+			votingQueue: {"uuid1": 2, "uuid2": 2, "uuid3": 1},
+			votingResult: {"word0": 0, "word1": 1, "word2": 2}
+		}
+		serverFunctions.toggle(gameStatus);
+		expect(gameStatus.voting).toBeFalsy();
+		expect(gameStatus.story).toEqual("A story word2");
+		expect(gameStatus.bannedStrings).toEqual(["BANNED_WORD"]);
+		expect(gameStatus.votingQueue).toEqual({});
+		expect(gameStatus.votingResult).toEqual({});
 	})
 })
 
