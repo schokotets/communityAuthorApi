@@ -60,8 +60,8 @@ function voteFor(gameStatus, uuid, id){
   let options = Object.keys(gameStatus.votingResult);
   if(uuid in gameStatus.votingQueue && gameStatus.votingQueue[uuid] === id) {
     return; //already voted for the same number
-  } else if (id >= options.length) {
-    return; //id too big
+  } else if (id < 0 || id >= options.length) {
+    return; //id too small / too big
   } else {
     gameStatus.votingResult[options[id]]++;
     if(uuid in gameStatus.votingQueue)
