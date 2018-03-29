@@ -195,8 +195,21 @@ describe('toggle()', () => {
 		expect(gameStatus.votingResult).toEqual({"word0": 0, "word1": 0, "word2": 0});
 	})
 
-	test('submitting is over, banned', () => {})
-	test('submitting is over, same word', () => {})
+	test('submitting is over, same word', () => {
+			let gameStatus = {
+				voting: false,
+				story: "A story",
+				bannedStrings: ["BANNED_WORD"],
+				votingQueue: {"uuid1": "word2", "uuid2": "word1", "uuid3": "word2"},
+				votingResult: {}
+			}
+			serverFunctions.toggle(gameStatus);
+			expect(gameStatus.voting).toBeTruthy();
+			expect(gameStatus.story).toEqual("A story");
+			expect(gameStatus.bannedStrings).toEqual(["BANNED_WORD"]);
+			expect(gameStatus.votingQueue).toEqual({});
+			expect(gameStatus.votingResult).toEqual({"word2": 0, "word1": 0});
+	})
 })
 
 describe('reset()', () => {
