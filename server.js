@@ -7,6 +7,7 @@ needSpace = serverMethods.needSpace;
 continueStory = serverMethods.continueStory;
 addWordToVoting = serverMethods.addWordToVoting;
 voteFor = serverMethods.voteFor;
+toggle = serverMethods.toggle;
 reset = serverMethods.reset;
 
 app.use(json());
@@ -28,8 +29,8 @@ let gameStatus = {
   voting: false,
   story: "",
   bannedStrings: [],
-  votingQueue: {}, //uuid -> word
-  votingResult: {} //id -> n
+  votingQueue: {}, //uuid -> word / uuid -> id
+  votingResult: {} //word -> n
 }
 
 var server = app.listen(8081, function () {
@@ -47,11 +48,7 @@ app.put('/reset', function (req, res) {
 
 // for testing purposes
 app.put('/toggle', function (req, res) {
-  gameStatus.voting ^= true;
-  if(!gameStatus.voting) { //voting is over
-    continueStory(gameStatus);
-    reset(gameStatus, false);
-  }
+  toggle(gameStatus);
   res.status(200).send("voting: " + gameStatus.voting);
 });
 

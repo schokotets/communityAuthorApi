@@ -54,16 +54,34 @@ function addWordToVoting(gameStatus, uuid, word){
  	if(isBanned(gameStatus, word))
  		return;
  	gameStatus.votingQueue[uuid] = word;
-  //TODO change later - it won't be tested
-  if(!(word in gameStatus.votingResult))
-    gameStatus.votingResult[word] = 0;
 }
 
 function voteFor(gameStatus, uuid, id){
-  //TODO no voting twice per uuid (via votingQueue)
   let options = Object.keys(gameStatus.votingResult);
-  if(!options || !options.length) return;
-  gameStatus.votingResult[options[id]]++;
+  if(uuid in gameStatus.votingQueue && gameStatus.votingQueue[uuid] === id) {
+    return; //already voted for the same number
+  } else if (id < 0 || id >= options.length) {
+    return; //id too small / too big
+  } else {
+    gameStatus.votingResult[options[id]]++;
+    if(uuid in gameStatus.votingQueue)
+      gameStatus.votingResult[options[gameStatus.votingQueue[uuid]]]--;
+    gameStatus.votingQueue[uuid] = id;
+  }
+}
+
+function toggle(gameStatus) {
+  gameStatus.voting ^= true;
+  if(gameStatus.voting) { //submitting is over
+    for(let word of Object.values(gameStatus.votingQueue)) {
+      if(!(word in gameStatus.votingResult))
+        gameStatus.votingResult[word] = 0;
+    }
+    gameStatus.votingQueue = {};
+  } else { //voting is over
+    continueStory(gameStatus);
+    reset(gameStatus, false);
+  }
 }
 
 function reset(gameStatus, hard) {
@@ -84,5 +102,6 @@ module.exports = {
   "mostPopular": mostPopular,
  	"addWordToVoting": addWordToVoting,
   "voteFor": voteFor,
+  "toggle": toggle,
   "reset": reset
 };

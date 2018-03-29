@@ -22,7 +22,7 @@ describe('padWord()', () => {
 	test('pads word with space', () => {
 		let gameStatus = {
 			story: "Die Geschichte",
-			bannedStrings: ["BANNED_WORD"],
+			bannedStrings: [],
 			votingQueue: {},
 			votingResult: {}
 		}
@@ -31,7 +31,7 @@ describe('padWord()', () => {
 	test('doesn\'t pad "." with space', () => {
 		let gameStatus = {
 			story: "Die Geschichte",
-			bannedStrings: ["BANNED_WORD"],
+			bannedStrings: [],
 			votingQueue: {},
 			votingResult: {}
 		}
@@ -95,7 +95,7 @@ describe('continueStory()', () => {
 	test('continues Story', () => {
 			let gameStatus = {
 				story: "The story",
-				bannedStrings: ["BAnNeD"],
+				bannedStrings: [],
 				votingQueue: {},
 				votingResult: {"word1": 5, "word2": 7}
 			}
@@ -144,22 +144,109 @@ describe('addWordToVoting()', () => {
 })
 
 describe('voteFor()', () => {
-	test('votes for existing word', () => {
+	test('votes for the first time', () => {
 			let gameStatus = {
-				votingResult: {
-					"word1": 3,
-					"word2": 1
-				}
+				votingQueue: { "uuid1": 0, "uuid2": 0, "uuid3": 1, "uuid4": 0 },
+				votingResult: { "word1": 3, "word2": 1 }
 			}
 			serverFunctions.voteFor(gameStatus, "uuid", 1);
 			expect(gameStatus.votingResult).toEqual({"word1": 3, "word2": 2})
+			expect(gameStatus.votingQueue).toEqual(
+				{ "uuid1": 0, "uuid2": 0, "uuid3": 1, "uuid4": 0, "uuid": 1 }
+			)
 	})
-	test('can\'t vote for empty result list', () => {
+	test('change vote', () => {
 			let gameStatus = {
+				votingQueue: { "uuid1": 0, "uuid2": 1, "uuid": 0 },
+				votingResult: { "word1": 2, "word2": 1 }
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", 1);
+			expect(gameStatus.votingQueue).toEqual({"uuid1": 0, "uuid2": 1, "uuid": 1})
+			expect(gameStatus.votingResult).toEqual({"word1": 1, "word2": 2})
+	})
+	test('same vote', () => {
+			let gameStatus = {
+				votingQueue: { "uuid1": 0, "uuid2": 1, "uuid": 0 },
+				votingResult: { "word1": 2, "word2": 1}
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", 0);
+			expect(gameStatus.votingQueue).toEqual({"uuid1": 0, "uuid2": 1, "uuid": 0})
+			expect(gameStatus.votingResult).toEqual({"word1": 2, "word2": 1})
+	})
+	test('empty list', () => {
+			let gameStatus = {
+				votingQueue: {},
 				votingResult: {}
 			}
 			serverFunctions.voteFor(gameStatus, "uuid", 1);
 			expect(gameStatus.votingResult).toEqual({})
+	})
+	test('too big id', () => {
+			let gameStatus = {
+				votingQueue: { "uuid1": 0, "uuid2": 1, "uuid3": 1 },
+				votingResult: { "word1": 1, "word2": 2 }
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", 2);
+			expect(gameStatus.votingQueue).toEqual({"uuid1": 0, "uuid2": 1, "uuid3": 1})
+			expect(gameStatus.votingResult).toEqual({"word1": 1, "word2": 2})
+	})
+	test('too small id', () => {
+			let gameStatus = {
+				votingQueue: { "uuid1": 0, "uuid2": 1, "uuid3": 1 },
+				votingResult: { "word1": 1, "word2": 2 }
+			}
+			serverFunctions.voteFor(gameStatus, "uuid", -2);
+			expect(gameStatus.votingQueue).toEqual({"uuid1": 0, "uuid2": 1, "uuid3": 1})
+			expect(gameStatus.votingResult).toEqual({"word1": 1, "word2": 2})
+	})
+})
+
+describe('toggle()', () => {
+	test('voting is over', () => {
+		let gameStatus = {
+			voting: true,
+			story: "A story",
+			bannedStrings: ["BANNED_WORD"],
+			votingQueue: {"uuid1": 2, "uuid2": 2, "uuid3": 1},
+			votingResult: {"word0": 0, "word1": 1, "word2": 2}
+		}
+		serverFunctions.toggle(gameStatus);
+		expect(gameStatus.voting).toBeFalsy();
+		expect(gameStatus.story).toEqual("A story word2");
+		expect(gameStatus.bannedStrings).toEqual(["BANNED_WORD"]);
+		expect(gameStatus.votingQueue).toEqual({});
+		expect(gameStatus.votingResult).toEqual({});
+	})
+	test('submitting is over, different words', () => {
+		let gameStatus = {
+			voting: false,
+			story: "A story",
+			bannedStrings: ["BANNED_WORD"],
+			votingQueue: {"uuid1": "word0", "uuid2": "word1", "uuid3": "word2"},
+			votingResult: {}
+		}
+		serverFunctions.toggle(gameStatus);
+		expect(gameStatus.voting).toBeTruthy();
+		expect(gameStatus.story).toEqual("A story");
+		expect(gameStatus.bannedStrings).toEqual(["BANNED_WORD"]);
+		expect(gameStatus.votingQueue).toEqual({});
+		expect(gameStatus.votingResult).toEqual({"word0": 0, "word1": 0, "word2": 0});
+	})
+
+	test('submitting is over, same word', () => {
+			let gameStatus = {
+				voting: false,
+				story: "A story",
+				bannedStrings: ["BANNED_WORD"],
+				votingQueue: {"uuid1": "word2", "uuid2": "word1", "uuid3": "word2"},
+				votingResult: {}
+			}
+			serverFunctions.toggle(gameStatus);
+			expect(gameStatus.voting).toBeTruthy();
+			expect(gameStatus.story).toEqual("A story");
+			expect(gameStatus.bannedStrings).toEqual(["BANNED_WORD"]);
+			expect(gameStatus.votingQueue).toEqual({});
+			expect(gameStatus.votingResult).toEqual({"word2": 0, "word1": 0});
 	})
 })
 
