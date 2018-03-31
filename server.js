@@ -10,21 +10,6 @@ voteFor = serverMethods.voteFor;
 toggle = serverMethods.toggle;
 reset = serverMethods.reset;
 
-app.use(json());
-// Add headers
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', false);
-    // Pass to next layer of middleware
-    next();
-});
-
-
 let gameStatus = {
   voting: false,
   story: "",
@@ -32,6 +17,40 @@ let gameStatus = {
   votingQueue: {}, //uuid -> word / uuid -> id
   votingResult: {} //word -> n
 }
+
+let switchRules = {
+  afterTime: 60, //Time in seconds. If 0 don't switch after time
+  minimumWords: 2
+}
+
+//UNTESTED STUFF. NEEDS LIVE TESTING
+const gameLoop = () => {
+  if(gameStatus.voting || Object.keys(gameStatus.votingQueue).length > switchRules.minimumWords){
+    toggle(gameStatus);
+  }
+  setTimeout(gameLoop, switchRules.afterTime);
+}
+
+if(switchRules.afterTime > 0){
+  setTimeout(gameLoop, switchRules.afterTime);
+}
+
+//UNTESTED STUFF ENDS HERE
+
+app.use(json());
+// Add headers
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', false);
+    // Pass to next layer of middleware
+    next();
+  });
+
 
 var server = app.listen(8081, function () {
   var host = server.address().address;
