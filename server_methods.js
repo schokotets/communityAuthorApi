@@ -82,6 +82,8 @@ function toggle(gameStatus) {
     continueStory(gameStatus);
     reset(gameStatus, false);
   }
+  console.log("Toggled game status. voting: " +
+    (gameStatus.voting ? "true" : "false"));
 }
 
 function reset(gameStatus, hard) {
