@@ -19,23 +19,21 @@ let gameStatus = {
 }
 
 let switchRules = {
-  afterTime: 60, //Time in seconds. If 0 don't switch after time
+  afterTime: 10, //Time in seconds. If 0 don't switch after time
   minimumWords: 2
 }
 
-/*//UNTESTED STUFF. NEEDS LIVE TESTING
 const gameLoop = () => {
   if(gameStatus.voting || Object.keys(gameStatus.votingQueue).length > switchRules.minimumWords){
+    console.log("Switched game state automatically");
     toggle(gameStatus);
   }
-  setTimeout(gameLoop, switchRules.afterTime);
+  setTimeout(gameLoop, switchRules.afterTime*1000);
 }
 
 if(switchRules.afterTime > 0){
-  setTimeout(gameLoop, switchRules.afterTime);
+  setTimeout(gameLoop, switchRules.afterTime*1000);
 }
-
-//UNTESTED STUFF ENDS HERE*/
 
 app.use(json());
 // Add headers
