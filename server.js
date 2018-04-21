@@ -63,6 +63,13 @@ app.put('/toggle', function (req, res) {
   res.status(200).send("voting: " + gameStatus.voting);
 });
 
+app.get('/status', function(req, res) {
+  let response = {
+    voting: gameStatus.voting,
+    countdown:  
+  }
+});
+
 app.get('/queue', function (req, res) {
   if(gameStatus.voting)
     res.json(gameStatus.votingResult).end();
