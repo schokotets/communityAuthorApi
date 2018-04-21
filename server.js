@@ -19,16 +19,20 @@ let gameStatus = {
 }
 
 let switchRules = {
-  afterTime: 10, //Time in seconds. If 0 don't switch after time
+  afterTime: 20, //Time in seconds. If 0 don't switch after time
+  retryTime: 5,
   minimumWords: 2
 }
 
 const gameLoop = () => {
-  if(gameStatus.voting || Object.keys(gameStatus.votingQueue).length > switchRules.minimumWords){
+  if(gameStatus.voting || Object.keys(gameStatus.votingQueue).length >= switchRules.minimumWords) {
     console.log("Switched game state automatically");
     toggle(gameStatus);
-  }
-  setTimeout(gameLoop, switchRules.afterTime*1000);
+    setTimeout(gameLoop, switchRules.afterTime*1000);
+  } else {
+    setTimeout(gameLoop, switchRules.retryTime*1000);
+    console.log("Automatic switching not possible, auto-retry in " + switchRules.retryTime + "s");
+  } 
 }
 
 if(switchRules.afterTime > 0){
