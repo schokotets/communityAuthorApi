@@ -3,6 +3,7 @@ const json = require('body-parser').json;
 const app = express();
 
 const serverMethods = require("./server_methods.js");
+gameLoop = serverMethods.gameLoop;
 needSpace = serverMethods.needSpace;
 continueStory = serverMethods.continueStory;
 addWordToVoting = serverMethods.addWordToVoting;
@@ -24,19 +25,8 @@ let switchRules = {
   minimumWords: 2
 }
 
-const gameLoop = () => {
-  if(gameStatus.voting || Object.keys(gameStatus.votingQueue).length >= switchRules.minimumWords) {
-    console.log("Switched game state automatically");
-    toggle(gameStatus);
-    setTimeout(gameLoop, switchRules.afterTime*1000);
-  } else {
-    setTimeout(gameLoop, switchRules.retryTime*1000);
-    console.log("Automatic switching not possible, auto-retry in " + switchRules.retryTime + "s");
-  } 
-}
-
 if(switchRules.afterTime > 0){
-  setTimeout(gameLoop, switchRules.afterTime*1000);
+  setTimeout(serverMethods.gameLoop, switchRules.afterTime*1000, gameStatus, switchRules);
 }
 
 app.use(json());

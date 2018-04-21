@@ -70,6 +70,17 @@ function voteFor(gameStatus, uuid, id){
   }
 }
 
+function gameLoop(gameStatus, switchRules) {
+  if(gameStatus.voting || Object.keys(gameStatus.votingQueue).length >= switchRules.minimumWords) {
+    console.log("Switched game state automatically");
+    toggle(gameStatus);
+    setTimeout(gameLoop, switchRules.afterTime*1000, gameStatus, switchRules);
+  } else {
+    setTimeout(gameLoop, switchRules.retryTime*1000, gameStatus, switchRules);
+    console.log("Automatic switching not possible, auto-retry in " + switchRules.retryTime + "s");
+  }
+}
+
 function toggle(gameStatus) {
   gameStatus.voting ^= true;
   if(gameStatus.voting) { //submitting is over
@@ -104,6 +115,7 @@ module.exports = {
   "mostPopular": mostPopular,
  	"addWordToVoting": addWordToVoting,
   "voteFor": voteFor,
+  "gameLoop": gameLoop,
   "toggle": toggle,
   "reset": reset
 };
