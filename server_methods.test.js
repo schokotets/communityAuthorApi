@@ -211,15 +211,15 @@ describe('gameLoop()', () => {
 			votingQueue: {},
 			votingResult: {}
 		}
-		let switchRules = {
+		let switchStatus = {
 			afterTime: 20,
 			retryTime: 5,
 			minimumWords: 2
 		}
-		serverFunctions.gameLoop(gameStatus, switchRules);
+		serverFunctions.gameLoop(gameStatus, switchStatus);
 		expect(gameStatus.voting).toBeFalsy();
 		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchRules.afterTime*1000, gameStatus, switchRules);
+		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
 		jest.clearAllTimers()
 	})
 	test('wait for enough entries', () => {
@@ -231,15 +231,15 @@ describe('gameLoop()', () => {
 			votingQueue: {},
 			votingResult: {}
 		}
-		let switchRules = {
+		let switchStatus = {
 			afterTime: 20,
 			retryTime: 5,
 			minimumWords: 2
 		}
-		serverFunctions.gameLoop(gameStatus, switchRules);
+		serverFunctions.gameLoop(gameStatus, switchStatus);
 		expect(gameStatus.voting).toBeFalsy();
 		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchRules.retryTime*1000, gameStatus, switchRules);
+		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.retryTime*1000, gameStatus, switchStatus);
 		jest.clearAllTimers()
 	})
 	test('enough words submitted', () => {
@@ -251,15 +251,15 @@ describe('gameLoop()', () => {
 			votingQueue: {"uuid1": 0, "uuid2": 1},
 			votingResult: {}
 		}
-		let switchRules = {
+		let switchStatus = {
 			afterTime: 20,
 			retryTime: 5,
 			minimumWords: 2
 		}
-		serverFunctions.gameLoop(gameStatus, switchRules);
+		serverFunctions.gameLoop(gameStatus, switchStatus);
 		expect(gameStatus.voting).toBeTruthy();
 		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchRules.afterTime*1000, gameStatus, switchRules);
+		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
 		jest.clearAllTimers()
 	})
 })
