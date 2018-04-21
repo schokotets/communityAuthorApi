@@ -75,9 +75,10 @@ function gameLoop(gameStatus, switchRules) {
     console.log("Switched game state automatically");
     toggle(gameStatus);
     setTimeout(gameLoop, switchRules.afterTime*1000, gameStatus, switchRules);
+    return date.now + switchRules.afterTime*1000; 
   } else {
-    setTimeout(gameLoop, switchRules.retryTime*1000, gameStatus, switchRules);
     console.log("Automatic switching not possible, auto-retry in " + switchRules.retryTime + "s");
+    setTimeout(gameLoop, switchRules.retryTime*1000, gameStatus, switchRules);
   }
 }
 
