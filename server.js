@@ -22,11 +22,11 @@ let gameStatus = {
 let switchStatus = {
   afterTime: 20, //Time in seconds. If 0 don't switch after time
   retryTime: 5,
-  minimumWords: 2,
-  nextSwitch: Date.now + afterTime
+  minimumWords: 2
 }
 
-if(switchStatus.afterTime > 0){
+if(switchStatus.afterTime > 0) {
+  switchStatus.nextSwitch = Date.now() + switchStatus.afterTime*1000;
   setTimeout(serverMethods.gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
 }
 
@@ -67,8 +67,9 @@ app.put('/toggle', function (req, res) {
 app.get('/status', function(req, res) {
   let response = {
     voting: gameStatus.voting,
-    countdown: nextSwitch - Date.now   
+    countdown: switchStatus.nextSwitch - Date.now()   
   }
+  res.json(response).end();
 });
 
 app.get('/queue', function (req, res) {
