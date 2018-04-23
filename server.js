@@ -66,8 +66,8 @@ app.put('/toggle', function (req, res) {
 
 app.get('/status', function(req, res) {
   let response = {
-    voting: gameStatus.voting,
-    countdown: switchStatus.nextSwitch - Date.now()   
+    voting: gameStatus.voting?true:false,
+    countdown: switchStatus.nextSwitch - Date.now()
   }
   res.json(response).end();
 });
