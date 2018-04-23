@@ -19,10 +19,11 @@ let gameStatus = {
   votingResult: {} //word -> n
 }
 
-let = {
+let switchStatus = {
   afterTime: 20, //Time in seconds. If 0 don't switch after time
   retryTime: 5,
-  minimumWords: 2
+  minimumWords: 2,
+  nextSwitch: Date.now + afterTime
 }
 
 if(switchStatus.afterTime > 0){
@@ -66,7 +67,7 @@ app.put('/toggle', function (req, res) {
 app.get('/status', function(req, res) {
   let response = {
     voting: gameStatus.voting,
-    countdown:  
+    countdown: nextSwitch - Date.now   
   }
 });
 
