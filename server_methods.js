@@ -70,14 +70,16 @@ function voteFor(gameStatus, uuid, id){
   }
 }
 
-function gameLoop(gameStatus, switchRules) {
-  if(gameStatus.voting || Object.keys(gameStatus.votingQueue).length >= switchRules.minimumWords) {
+function gameLoop(gameStatus, switchStatus) {
+  if(gameStatus.voting || Object.keys(gameStatus.votingQueue).length >= switchStatus.minimumWords) {
     console.log("Switched game state automatically");
     toggle(gameStatus);
-    setTimeout(gameLoop, switchRules.afterTime*1000, gameStatus, switchRules);
+    setTimeout(gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
+    switchStatus.nextSwitch = Date.now() + switchStatus.afterTime*1000; 
   } else {
-    setTimeout(gameLoop, switchRules.retryTime*1000, gameStatus, switchRules);
-    console.log("Automatic switching not possible, auto-retry in " + switchRules.retryTime + "s");
+    //console.log("Automatic switching not possible, auto-retry in " + switchStatus.retryTime + "s");
+    setTimeout(gameLoop, switchStatus.retryTime*1000, gameStatus, switchStatus);
+    switchStatus.nextSwitch = Date.now() + switchStatus.retryTime*1000;
   }
 }
 

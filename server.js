@@ -19,14 +19,15 @@ let gameStatus = {
   votingResult: {} //word -> n
 }
 
-let switchRules = {
+let switchStatus = {
   afterTime: 20, //Time in seconds. If 0 don't switch after time
   retryTime: 5,
   minimumWords: 2
 }
 
-if(switchRules.afterTime > 0){
-  setTimeout(serverMethods.gameLoop, switchRules.afterTime*1000, gameStatus, switchRules);
+if(switchStatus.afterTime > 0) {
+  switchStatus.nextSwitch = Date.now() + switchStatus.afterTime*1000;
+  setTimeout(serverMethods.gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
 }
 
 app.use(json());
@@ -63,6 +64,14 @@ app.put('/toggle', function (req, res) {
   res.status(200).send("voting: " + gameStatus.voting);
 });
 
+app.get('/status', function(req, res) {
+  let response = {
+    voting: gameStatus.voting?true:false,
+    countdown: switchStatus.nextSwitch - Date.now()
+  }
+  res.json(response).end();
+});
+
 app.get('/queue', function (req, res) {
   if(gameStatus.voting)
     res.json(gameStatus.votingResult).end();
@@ -85,13 +94,17 @@ app.get('/story', function (req, res) {
 });
 
 app.post('/submit', function (req, res) {
-  let word = req.body.word.trim();
-  let uuid = req.body.uuid;
-  if(word.match(/([\s]+)/g) != null) {
-    res.status(403).end();
+  if(!gameStatus.voting) {
+    let word = req.body.word.trim();
+    let uuid = req.body.uuid;
+    if(word.match(/([\s]+)/g) != null) {
+      res.status(403).end();
+    } else {
+      addWordToVoting(gameStatus, uuid, word);
+      console.log('Word submitted: "' + word + '"')
+      res.status(200).send(word);
+    }
   } else {
-    addWordToVoting(gameStatus, uuid, word);
-    console.log('Word submitted: "' + word + '"')
-    res.status(200).send(word);
+    res.status(403).end();
   }
 });
