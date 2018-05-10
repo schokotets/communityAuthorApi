@@ -202,7 +202,7 @@ describe('voteFor()', () => {
 })
 
 describe('gameLoop()', () => {
-	test('continue voting', () => {
+	test('not enough votes to continue', () => {
 		jest.useFakeTimers();
 		let gameStatus = {
 			voting: true,
@@ -223,7 +223,7 @@ describe('gameLoop()', () => {
 		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.retryTime*1000, gameStatus, switchStatus);
 		jest.clearAllTimers()
 	})
-	test('stop voting', () => {
+	test('enough votes to continue', () => {
 		jest.useFakeTimers();
 		let gameStatus = {
 			voting: true,
@@ -244,7 +244,7 @@ describe('gameLoop()', () => {
 		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
 		jest.clearAllTimers()
 	})
-	test('wait for enough entries', () => {
+	test('not enough submissions to continue', () => {
 		jest.useFakeTimers();
 		let gameStatus = {
 			voting: false,
@@ -265,7 +265,7 @@ describe('gameLoop()', () => {
 		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.retryTime*1000, gameStatus, switchStatus);
 		jest.clearAllTimers()
 	})
-	test('enough words submitted', () => {
+	test('enough submissions to continue', () => {
 		jest.useFakeTimers();
 		let gameStatus = {
 			voting: false,
