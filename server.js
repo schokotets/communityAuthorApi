@@ -91,6 +91,8 @@ app.post('/vote', function (req, res) {
     let uuid = req.body.uuid;
     let id = req.body.id;
     voteFor(gameStatus, uuid, id);
+    console.log('Voted for: "' + Object.keys(gameStatus.votingResult)[id] + '" by "' + uuid + '"')
+    if(switchAble(gameStatus, switchStatus)) continueGame(gameStatus, switchStatus);
     res.status(200).end();
   } else {
     res.status(403).end();
@@ -109,7 +111,8 @@ app.post('/submit', function (req, res) {
       res.status(403).end();
     } else {
       addWordToVoting(gameStatus, uuid, word);
-      console.log('Word submitted: "' + word + '"')
+      console.log('Word submitted: "' + word + '" by "' + uuid + '"')
+      if(switchAble(gameStatus, switchStatus)) continueGame(gameStatus, switchStatus);
       res.status(200).send(word);
     }
   } else {

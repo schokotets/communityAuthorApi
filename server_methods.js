@@ -46,7 +46,9 @@ function continueStory(gameStatus) {
 
 function mostPopular(map) {
   if(!map || !Object.keys(map).length) return "";
-  return Object.keys(map).reduce((a, b) => map[a] > map[b] ? a : b);
+  let word = Object.keys(map).reduce((a, b) => map[a] > map[b] ? a : b);
+  console.log('Word "' + word + '" was chosen');
+  return word;
 }
 
 function addWordToVoting(gameStatus, uuid, word){
