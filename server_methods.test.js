@@ -201,7 +201,7 @@ describe('voteFor()', () => {
 	})
 })
 
-describe('gameLoop()', () => {
+describe('continueGame()', () => {
 	test('not enough votes to continue', () => {
 		jest.useFakeTimers();
 		let gameStatus = {

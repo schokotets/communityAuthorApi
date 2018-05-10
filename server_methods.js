@@ -70,16 +70,12 @@ function voteFor(gameStatus, uuid, id){
   }
 }
 
-function gameLoop(gameStatus, switchStatus) {
-  if(switchAble(gameStatus, switchStatus)) {
-    console.log("Switched game state automatically");
-    toggle(gameStatus);
-    setTimeout(gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
-    switchStatus.nextSwitch = Date.now() + switchStatus.afterTime*1000;
-  } else {
-    //console.log("Automatic switching not possible, auto-retry in " + switchStatus.retryTime + "s");
-    setTimeout(gameLoop, switchStatus.retryTime*1000, gameStatus, switchStatus);
-    switchStatus.nextSwitch = Date.now() + switchStatus.retryTime*1000;
+function continueGame(gameStatus, switchStatus) {
+  if(!gameStatus.scheduled) {
+    console.log("Scheduling next game state switch");
+    gameStatus.scheduled = true;
+    setTimeout(toggle, switchStatus.waitTime*1000, gameStatus);
+    switchStatus.nextSwitch = Date.now() + switchStatus.waitTime*1000;
   }
 }
 
@@ -90,6 +86,7 @@ function switchAble(gameStatus, switchStatus) {
 
 function toggle(gameStatus) {
   gameStatus.voting ^= true;
+  gameStatus.scheduled = false;
   if(gameStatus.voting) { //submitting is over
     for(let word of Object.values(gameStatus.votingQueue)) {
       if(!(word in gameStatus.votingResult))
@@ -122,7 +119,7 @@ module.exports = {
   "mostPopular": mostPopular,
  	"addWordToVoting": addWordToVoting,
   "voteFor": voteFor,
-  "gameLoop": gameLoop,
+  "continueGame": continueGame,
   "switchAble": switchAble,
   "toggle": toggle,
   "reset": reset
