@@ -288,6 +288,53 @@ describe('gameLoop()', () => {
 	})
 })
 
+describe('switchAble()', () => {
+	test('not enough votes to continue', () => {
+		let gameStatus = {
+			voting: true,
+			votingQueue: {}
+		}
+		let switchStatus = {
+			minimumWords: 2,
+			minimumVotes: 1
+		}
+		expect(serverFunctions.switchAble(gameStatus, switchStatus)).toBeFalsy();
+	})
+	test('enough votes to continue', () => {
+		let gameStatus = {
+			voting: true,
+			votingQueue: {"uuid1": 0}
+		}
+		let switchStatus = {
+			minimumWords: 2,
+			minimumVotes: 1
+		}
+		expect(serverFunctions.switchAble(gameStatus, switchStatus)).toBeTruthy();
+	})
+	test('not enough submissions to continue', () => {
+		let gameStatus = {
+			voting: false,
+			votingQueue: {}
+		}
+		let switchStatus = {
+			minimumWords: 2,
+			minimumVotes: 1
+		}
+		expect(serverFunctions.switchAble(gameStatus, switchStatus)).toBeFalsy();
+	})
+	test('enough submissions to continue', () => {
+		let gameStatus = {
+			voting: false,
+			votingQueue: {"uuid1": 0, "uuid2": 1}
+		}
+		let switchStatus = {
+			minimumWords: 2,
+			minimumVotes: 1
+		}
+		expect(serverFunctions.switchAble(gameStatus, switchStatus)).toBeTruthy();
+	})
+})
+
 describe('toggle()', () => {
 	test('voting is over', () => {
 		let gameStatus = {
