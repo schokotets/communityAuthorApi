@@ -217,7 +217,7 @@ describe('continueGame()', () => {
 		}
 		serverFunctions.continueGame(gameStatus, switchStatus);
 		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.toggle, switchStatus.waitTime*1000, gameStatus);
+		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), switchStatus.waitTime*1000, gameStatus, switchStatus);
 		jest.clearAllTimers()
 	})
 	test("doesn't call twice", () => {
