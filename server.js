@@ -22,7 +22,8 @@ let gameStatus = {
 let switchStatus = {
   afterTime: 20, //Time in seconds. If 0 don't switch after time
   retryTime: 5,
-  minimumWords: 2
+  minimumWords: 2,
+  minimumVotes: 1
 }
 
 if(switchStatus.afterTime > 0) {
