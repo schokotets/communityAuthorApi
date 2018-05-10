@@ -7,7 +7,7 @@ needSpace = serverMethods.needSpace;
 continueStory = serverMethods.continueStory;
 addWordToVoting = serverMethods.addWordToVoting;
 voteFor = serverMethods.voteFor;
-gameLoop = serverMethods.gameLoop;
+continueGame = serverMethods.continueGame;
 switchAble = serverMethods.switchAble;
 toggle = serverMethods.toggle;
 reset = serverMethods.reset;
@@ -21,15 +21,10 @@ let gameStatus = {
 }
 
 let switchStatus = {
-  afterTime: 20, //Time in seconds. If 0 don't switch after time
-  retryTime: 5,
+  waitTime: 12, //Time in seconds. If 0 don't switch after time
+  scheduled: false,
   minimumWords: 2,
   minimumVotes: 1
-}
-
-if(switchStatus.afterTime > 0) {
-  switchStatus.nextSwitch = Date.now() + switchStatus.afterTime*1000;
-  setTimeout(serverMethods.gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
 }
 
 app.use(json());
@@ -96,6 +91,8 @@ app.post('/vote', function (req, res) {
     let uuid = req.body.uuid;
     let id = req.body.id;
     voteFor(gameStatus, uuid, id);
+    console.log('Voted for: "' + Object.keys(gameStatus.votingResult)[id] + '" by "' + uuid + '"')
+    if(switchAble(gameStatus, switchStatus)) continueGame(gameStatus, switchStatus);
     res.status(200).end();
   } else {
     res.status(403).end();
@@ -114,7 +111,8 @@ app.post('/submit', function (req, res) {
       res.status(403).end();
     } else {
       addWordToVoting(gameStatus, uuid, word);
-      console.log('Word submitted: "' + word + '"')
+      console.log('Word submitted: "' + word + '" by "' + uuid + '"')
+      if(switchAble(gameStatus, switchStatus)) continueGame(gameStatus, switchStatus);
       res.status(200).send(word);
     }
   } else {

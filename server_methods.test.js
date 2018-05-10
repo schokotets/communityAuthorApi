@@ -201,8 +201,8 @@ describe('voteFor()', () => {
 	})
 })
 
-describe('gameLoop()', () => {
-	test('not enough votes to continue', () => {
+describe('continueGame()', () => {
+	test('calls in right delay', () => {
 		jest.useFakeTimers();
 		let gameStatus = {
 			voting: true,
@@ -212,78 +212,23 @@ describe('gameLoop()', () => {
 			votingResult: {}
 		}
 		let switchStatus = {
-			afterTime: 20,
-			retryTime: 5,
-			minimumWords: 2,
-		  minimumVotes: 1
+			waitTime: 20,
+			scheduled: false
 		}
-		serverFunctions.gameLoop(gameStatus, switchStatus);
-		expect(gameStatus.voting).toBeTruthy();
+		serverFunctions.continueGame(gameStatus, switchStatus);
 		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.retryTime*1000, gameStatus, switchStatus);
+		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.toggle, switchStatus.waitTime*1000, gameStatus);
 		jest.clearAllTimers()
 	})
-	test('enough votes to continue', () => {
+	test("doesn't call twice", () => {
 		jest.useFakeTimers();
-		let gameStatus = {
-			voting: true,
-			story: "",
-			bannedStrings: [],
-			votingQueue: {"uuid1": 0},
-			votingResult: {}
-		}
+		let gameStatus = {}
 		let switchStatus = {
-			afterTime: 20,
-			retryTime: 5,
-			minimumWords: 2,
-		  minimumVotes: 1
+			waitTime: 20,
+			scheduled: true
 		}
-		serverFunctions.gameLoop(gameStatus, switchStatus);
-		expect(gameStatus.voting).toBeFalsy();
-		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
-		jest.clearAllTimers()
-	})
-	test('not enough submissions to continue', () => {
-		jest.useFakeTimers();
-		let gameStatus = {
-			voting: false,
-			story: "",
-			bannedStrings: [],
-			votingQueue: {},
-			votingResult: {}
-		}
-		let switchStatus = {
-			afterTime: 20,
-			retryTime: 5,
-			minimumWords: 2,
-		  minimumVotes: 1
-		}
-		serverFunctions.gameLoop(gameStatus, switchStatus);
-		expect(gameStatus.voting).toBeFalsy();
-		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.retryTime*1000, gameStatus, switchStatus);
-		jest.clearAllTimers()
-	})
-	test('enough submissions to continue', () => {
-		jest.useFakeTimers();
-		let gameStatus = {
-			voting: false,
-			story: "",
-			bannedStrings: [],
-			votingQueue: {"uuid1": 0, "uuid2": 1},
-			votingResult: {}
-		}
-		let switchStatus = {
-			afterTime: 20,
-			retryTime: 5,
-			minimumWords: 2,
-		  minimumVotes: 1
-		}
-		serverFunctions.gameLoop(gameStatus, switchStatus);
-		expect(gameStatus.voting).toBeTruthy();
-		expect(setTimeout).toHaveBeenCalledTimes(1);
-		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
+		serverFunctions.continueGame(gameStatus, switchStatus);
+		expect(setTimeout).toHaveBeenCalledTimes(0);
 		jest.clearAllTimers()
 	})
 })
