@@ -3,11 +3,12 @@ const json = require('body-parser').json;
 const app = express();
 
 const serverMethods = require("./server_methods.js");
-gameLoop = serverMethods.gameLoop;
 needSpace = serverMethods.needSpace;
 continueStory = serverMethods.continueStory;
 addWordToVoting = serverMethods.addWordToVoting;
 voteFor = serverMethods.voteFor;
+gameLoop = serverMethods.gameLoop;
+switchAble = serverMethods.switchAble;
 toggle = serverMethods.toggle;
 reset = serverMethods.reset;
 
@@ -22,7 +23,8 @@ let gameStatus = {
 let switchStatus = {
   afterTime: 20, //Time in seconds. If 0 don't switch after time
   retryTime: 5,
-  minimumWords: 2
+  minimumWords: 2,
+  minimumVotes: 1
 }
 
 if(switchStatus.afterTime > 0) {
@@ -66,8 +68,19 @@ app.put('/toggle', function (req, res) {
 
 app.get('/status', function(req, res) {
   let response = {
-    voting: gameStatus.voting?true:false,
-    countdown: switchStatus.nextSwitch - Date.now()
+    voting: gameStatus.voting ? true : false
+  }
+  if(!switchAble(gameStatus, switchStatus)){
+    response.waiting = {
+      done: false,
+      value: Object.keys(gameStatus.votingQueue).length,
+      required: gameStatus.voting?switchStatus.minimumVotes:switchStatus.minimumWords
+    }
+  } else {
+    response.waiting = {
+      done: true,
+      countdown: switchStatus.nextSwitch - Date.now()
+    }
   }
   res.json(response).end();
 });

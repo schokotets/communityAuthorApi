@@ -71,16 +71,21 @@ function voteFor(gameStatus, uuid, id){
 }
 
 function gameLoop(gameStatus, switchStatus) {
-  if(gameStatus.voting || Object.keys(gameStatus.votingQueue).length >= switchStatus.minimumWords) {
+  if(switchAble(gameStatus, switchStatus)) {
     console.log("Switched game state automatically");
     toggle(gameStatus);
     setTimeout(gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
-    switchStatus.nextSwitch = Date.now() + switchStatus.afterTime*1000; 
+    switchStatus.nextSwitch = Date.now() + switchStatus.afterTime*1000;
   } else {
     //console.log("Automatic switching not possible, auto-retry in " + switchStatus.retryTime + "s");
     setTimeout(gameLoop, switchStatus.retryTime*1000, gameStatus, switchStatus);
     switchStatus.nextSwitch = Date.now() + switchStatus.retryTime*1000;
   }
+}
+
+function switchAble(gameStatus, switchStatus) {
+  return (gameStatus.voting && Object.keys(gameStatus.votingQueue).length >= switchStatus.minimumVotes) ||
+        (!gameStatus.voting && Object.keys(gameStatus.votingQueue).length >= switchStatus.minimumWords);
 }
 
 function toggle(gameStatus) {
@@ -118,6 +123,7 @@ module.exports = {
  	"addWordToVoting": addWordToVoting,
   "voteFor": voteFor,
   "gameLoop": gameLoop,
+  "switchAble": switchAble,
   "toggle": toggle,
   "reset": reset
 };
