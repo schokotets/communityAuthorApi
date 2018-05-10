@@ -76,7 +76,9 @@ function continueGame(gameStatus, switchStatus) {
   if(!switchStatus.scheduled) {
     console.log("Scheduling next game state switch");
     switchStatus.scheduled = true;
-    setTimeout(toggle, switchStatus.waitTime*1000, gameStatus);
+    setTimeout(function(gameStatus, switchStatus){
+      toggle(gameStatus); switchStatus.scheduled = false;
+    }, switchStatus.waitTime*1000, gameStatus, switchStatus);
     switchStatus.nextSwitch = Date.now() + switchStatus.waitTime*1000;
   }
 }
@@ -88,7 +90,6 @@ function switchAble(gameStatus, switchStatus) {
 
 function toggle(gameStatus) {
   gameStatus.voting ^= true;
-  gameStatus.scheduled = false;
   if(gameStatus.voting) { //submitting is over
     for(let word of Object.values(gameStatus.votingQueue)) {
       if(!(word in gameStatus.votingResult))
