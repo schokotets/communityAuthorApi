@@ -202,7 +202,7 @@ describe('voteFor()', () => {
 })
 
 describe('gameLoop()', () => {
-	test('still voting', () => {
+	test('continue voting', () => {
 		jest.useFakeTimers();
 		let gameStatus = {
 			voting: true,
@@ -214,7 +214,29 @@ describe('gameLoop()', () => {
 		let switchStatus = {
 			afterTime: 20,
 			retryTime: 5,
-			minimumWords: 2
+			minimumWords: 2,
+		  minimumVotes: 1
+		}
+		serverFunctions.gameLoop(gameStatus, switchStatus);
+		expect(gameStatus.voting).toBeTruthy();
+		expect(setTimeout).toHaveBeenCalledTimes(1);
+		expect(setTimeout).toHaveBeenLastCalledWith(serverFunctions.gameLoop, switchStatus.retryTime*1000, gameStatus, switchStatus);
+		jest.clearAllTimers()
+	})
+	test('stop voting', () => {
+		jest.useFakeTimers();
+		let gameStatus = {
+			voting: true,
+			story: "",
+			bannedStrings: [],
+			votingQueue: {"uuid1": 0},
+			votingResult: {}
+		}
+		let switchStatus = {
+			afterTime: 20,
+			retryTime: 5,
+			minimumWords: 2,
+		  minimumVotes: 1
 		}
 		serverFunctions.gameLoop(gameStatus, switchStatus);
 		expect(gameStatus.voting).toBeFalsy();
@@ -234,7 +256,8 @@ describe('gameLoop()', () => {
 		let switchStatus = {
 			afterTime: 20,
 			retryTime: 5,
-			minimumWords: 2
+			minimumWords: 2,
+		  minimumVotes: 1
 		}
 		serverFunctions.gameLoop(gameStatus, switchStatus);
 		expect(gameStatus.voting).toBeFalsy();
@@ -254,7 +277,8 @@ describe('gameLoop()', () => {
 		let switchStatus = {
 			afterTime: 20,
 			retryTime: 5,
-			minimumWords: 2
+			minimumWords: 2,
+		  minimumVotes: 1
 		}
 		serverFunctions.gameLoop(gameStatus, switchStatus);
 		expect(gameStatus.voting).toBeTruthy();
