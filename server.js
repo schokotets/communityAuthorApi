@@ -3,11 +3,12 @@ const json = require('body-parser').json;
 const app = express();
 
 const serverMethods = require("./server_methods.js");
-gameLoop = serverMethods.gameLoop;
 needSpace = serverMethods.needSpace;
 continueStory = serverMethods.continueStory;
 addWordToVoting = serverMethods.addWordToVoting;
 voteFor = serverMethods.voteFor;
+gameLoop = serverMethods.gameLoop;
+switchAble = serverMethods.switchAble;
 toggle = serverMethods.toggle;
 reset = serverMethods.reset;
 

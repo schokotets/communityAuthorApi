@@ -123,6 +123,7 @@ module.exports = {
  	"addWordToVoting": addWordToVoting,
   "voteFor": voteFor,
   "gameLoop": gameLoop,
+  "switchAble": switchAble,
   "toggle": toggle,
   "reset": reset
 };
