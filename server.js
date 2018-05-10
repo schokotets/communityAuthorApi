@@ -21,15 +21,10 @@ let gameStatus = {
 }
 
 let switchStatus = {
-  afterTime: 20, //Time in seconds. If 0 don't switch after time
-  retryTime: 5,
+  waitTime: 12, //Time in seconds. If 0 don't switch after time
+  scheduled: false,
   minimumWords: 2,
   minimumVotes: 1
-}
-
-if(switchStatus.afterTime > 0) {
-  switchStatus.nextSwitch = Date.now() + switchStatus.afterTime*1000;
-  setTimeout(serverMethods.gameLoop, switchStatus.afterTime*1000, gameStatus, switchStatus);
 }
 
 app.use(json());
