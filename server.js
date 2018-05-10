@@ -68,8 +68,19 @@ app.put('/toggle', function (req, res) {
 
 app.get('/status', function(req, res) {
   let response = {
-    voting: gameStatus.voting?true:false,
-    countdown: switchStatus.nextSwitch - Date.now()
+    voting: gameStatus.voting ? true : false
+  }
+  if(!switchAble(gameStatus, switchStatus)){
+    response.waiting = {
+      done: false,
+      value: Object.keys(gameStatus.votingQueue).length,
+      required: gameStatus.voting?switchStatus.minimumVotes:switchStatus.minimumWords
+    }
+  } else {
+    response.waiting = {
+      done: true,
+      countdown: switchStatus.nextSwitch - Date.now()
+    }
   }
   res.json(response).end();
 });
