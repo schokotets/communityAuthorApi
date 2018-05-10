@@ -73,7 +73,7 @@ function voteFor(gameStatus, uuid, id){
 }
 
 function continueGame(gameStatus, switchStatus) {
-  if(!gameStatus.scheduled) {
+  if(!switchStatus.scheduled) {
     console.log("Scheduling next game state switch");
     gameStatus.scheduled = true;
     setTimeout(toggle, switchStatus.waitTime*1000, gameStatus);
