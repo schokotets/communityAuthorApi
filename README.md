@@ -17,5 +17,5 @@ Alternatively, you can install nodemon via `npm install nodemon -g` and execute 
 This will automatically reload the app on code changes and is very helpful for development.
 
 ### Used npm packages
-- express v4.16.3
-- jest v22.4.2 (for developing)
+- express v4.16.3 (webserver)
+- jest v22.4.4 (for testing)
